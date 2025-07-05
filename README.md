@@ -39,6 +39,9 @@ python main.py
 ```
 
 ## Overview
+![Overview of DeST](./images/framework.jpg)
+
+## Hyperparameter Settings
 
 
 # 🎉 Acknowledgement
