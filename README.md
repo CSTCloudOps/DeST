@@ -42,6 +42,43 @@ python main.py
 ![Overview of DeST](./images/framework.jpg)
 
 ## Hyperparameter Settings
+To verify the robustness of our algorithm against hyperparameters, we systematically optimized two critical parameters through combinatorial search: GNN layers (tested range: 1-5) and window sizes (tested range: 3-7). A clear tradeoff in window sizing: Excessively small windows (e.g., size=3) fail to capture complete failure contexts, while overly large windows (e.g., size=7) introduce irrelevant noise.  Based on joint optimization of F1 and AVG@K metrics, we recommend GNN layers=2 and window size=5 as the optimal configuration, balancing information completeness and noise suppression.
+
+<img src="./images/window_size.png" width="39%"><img src="./images/GNN.png" width="45%">
+
+### Other Parameter Description in the Demo
+
+Take dataset D1 as an example.
+
+#### Pre-training in SSL
+
+- **instance_dim** : The number of microservice instances. (default: 46)
+- **channel_dim** : The number of data channels. (default: 130)
+- **gnn_hidden_dim** : The hidden dimension of GAT. (default: 64)
+- **gnn_out_dim** : The output dimension of GAT. (default: 32)
+- **noise_rate** : Dropout ratio. (default: 0.3)
+- **gnn_layers** : The number of layers of GAT. (default: 2)
+- **epochs** : The training epochs. (default: 1000)
+- **batch_size** : The batch size. (default: 4)
+- **learning_rate** : The learning rate. (default: 0.001)
+
+#### Downstream tasks.
+
+- **split_ratio** : The ratio for splitting the initialization set and the test set. (default: 0.6)
+- **method & t_value** : The methods and parameters for aggregating ILD to obtain SLD. The method can be either 'num' or 'prob', representing the specified number and probability methods, respectively. 'num' can take 't_value' in the range [1, instance_dim], while 'prob' can take 't_value' in the range [0,1). (default: 'num', 3)
+- **q & level** : The initialize parameters for SPOT. (default: 0.1, 0.95)
+- **delay** : Consider anomalies with intervals smaller than the delay as the same failure. (default: 600)
+- **impact_window** : The impact range of a single failure. Functions similarly to 'before' and 'after'. (default: 300)
+- **before & after** : The failure injection time is inject_ts. Assuming the failure impact range is [inject_ts-before, inject_ts+after], take the data within this time window for analysis. (default: 59, 300)
+- **max_clusters** : The maximum number of clusters obtained from the cut tree in failure triage. (default: 25)
+- **verbose** : Control the output to be either concise or verbose. (default: False)
+
+More details can be found in the configuration file: ART/config/D1.yaml.
+
+## Large-Scale Node Experiment
+We conducted additional large-scale experiments with datasets of thousands of nodes and billions of records, testing the efficiency of our anomaly detection and root cause localization methods at scale. These results  demonstrate the scalability and robustness of our approach on larger deployments.
+
+<img src="./images/scale.png" width="60%">
 
 
 # 🎉 Acknowledgement
